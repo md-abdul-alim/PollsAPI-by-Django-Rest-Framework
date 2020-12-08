@@ -6,6 +6,7 @@ from .serializers import PollSerializer, ChoiceSerializer, VoteSerializer, UserS
 from rest_framework import generics
 from rest_framework import status
 from rest_framework import viewsets
+from django.contrib.auth import authenticate
 
 # queryset: This determines the initial queryset. The queryset can be further filtered, sliced or ordered by the view.
 # serializer_class: This will be used for validating and deserializing the input and for serializing the output.
@@ -73,6 +74,20 @@ class UserCreate(generics.CreateAPIView):
     authentication_classes = ()
     permission_classes = ()
     serializer_class = UserSerializer
+
+
+class LoginView(APIView):
+    permission_classes = ()
+
+    def post(self, request,):
+        username = request.data.get("username")
+        password = request.data.get("password")
+        user = authenticate(username=username, password=password)
+        if user:
+            return Response({"token": user.auth_token.key})
+        else:
+            return Response({"error": "Wrong Credentials"}, status=status.HTTP_400_BAD_REQUEST)
+        
 
 
 """
