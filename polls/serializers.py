@@ -6,6 +6,9 @@ from .models import Poll, Choice, Vote
 
 # vote -> choice ->poll
 
+# We have overriden the ModelSerializer method’s create() to save the User instances. We ensure that we set the password correctly using user.set_password, rather than setting the raw password as the hash. We also don’t want to get back the password in response which we ensure using extra_kwargs = {'password':
+# {'write_only': True}}.
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:

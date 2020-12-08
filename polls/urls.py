@@ -1,13 +1,15 @@
 from django.urls import path
 from rest_framework.routers import DefaultRouter
 from .views import polls_detail, polls_list
-from .apiviews import ApiPollList, ApiPollDetail, ApiChoiceList, ApiCreateVote, ApiPollDetail, PollViewSet
+from .apiviews import ApiPollList, ApiPollDetail, ApiChoiceList, ApiCreateVote, ApiPollDetail, PollViewSet, UserCreate
 
 router = DefaultRouter()
 # Alternative of apipolls & apipolls/<int:pk>/ url
 router.register('PollViewSet', PollViewSet, basename='polls')
 
 urlpatterns = [
+    path('users/', UserCreate.as_view(), name='user'),
+
     path('polls/', polls_list, name='polls_list'),
     path('polls/<int:pk>/', polls_detail, name='polls_detail'),
     # API urls
