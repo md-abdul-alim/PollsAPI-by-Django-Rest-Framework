@@ -5,7 +5,7 @@ from .models import Poll, Choice
 from .serializers import PollSerializer
 
 
-class PollList(APIView):
+class ApiPollList(APIView):
     def get(self, request):
         MAX_OBJECTS = 20
         polls = Poll.objects.all()[:MAX_OBJECTS]
@@ -13,7 +13,7 @@ class PollList(APIView):
         return Response(data)
 
 
-class PollDetail(APIView):
+class ApiPollDetail(APIView):
     def get(self, request, pk):
         poll = get_object_or_404(Poll, pk=pk)
         data = PollSerializer(poll).data
