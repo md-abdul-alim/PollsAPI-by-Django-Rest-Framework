@@ -5,22 +5,35 @@ from .models import Poll, Choice
 from .serializers import PollSerializer, ChoiceSerializer, VoteSerializer
 from rest_framework import generics
 from rest_framework import status
+from rest_framework import viewsets
 
 # queryset: This determines the initial queryset. The queryset can be further filtered, sliced or ordered by the view.
 # serializer_class: This will be used for validating and deserializing the input and for serializing the output.
 
 
 # ListCreateAPIView: Get a list of entities, or create them. Allows GET and POST.
+# API Type 3
 class ApiPollList(generics.ListCreateAPIView):
     queryset = Poll.objects.all()
     serializer_class = PollSerializer
 
 # RetrieveDestroyAPIView: Retrieve an individual entity details, or delete the entity. Allows GET and DELETE.
 
+# API Type 3
+
 
 class ApiPollDetail(generics.RetrieveDestroyAPIView):
     queryset = Poll.objects.all()
     serializer_class = PollSerializer
+# PollViewSet is Alternative of ApiPollList & ApiPollDetail
+# API Type 4
+
+
+class PollViewSet(viewsets.ModelViewSet):
+    queryset = Poll.objects.all()
+    serializer_class = PollSerializer
+
+# API Type 3
 
 
 class ApiChoiceList(generics.ListCreateAPIView):
@@ -34,6 +47,8 @@ class ApiChoiceList(generics.ListCreateAPIView):
 #     serializer_class = ChoiceSerializer
 
 # CreateAPIView: Allows creating entities, but not listing them. Allows POST.
+
+# API Type 2
 
 
 class ApiCreateVote(APIView):
