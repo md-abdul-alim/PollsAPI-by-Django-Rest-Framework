@@ -20,7 +20,7 @@ class UserSerializer(serializers.ModelSerializer):
         )
         user.set_password(validate_data['password'])
         user.save()
-        
+        return user
 
 
 class VoteSerializer(serializers.ModelSerializer):
