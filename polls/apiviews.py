@@ -6,6 +6,7 @@ from .serializers import PollSerializer, ChoiceSerializer, VoteSerializer, UserS
 from rest_framework import generics
 from rest_framework import status
 from rest_framework import viewsets
+from rest_framework.exceptions import PermissionDenied
 from django.contrib.auth import authenticate
 
 # queryset: This determines the initial queryset. The queryset can be further filtered, sliced or ordered by the view.
@@ -31,18 +32,35 @@ class ApiPollDetail(generics.RetrieveDestroyAPIView):
 
 
 class PollViewSet(viewsets.ModelViewSet):
-    queryset = Poll.objects.all()
-    serializer_class = PollSerializer
+    def destroy(self, request, *args, **kwargs):
+        poll = Poll.objects.get(pk=self.kwargs["pk"])
+        if not request.user == poll.created_by:
+            raise PermissionDenied("You can not delete this poll.")
+        return super().destroy(request, *args, **kwargs)
+
+# for test
+# class PollViewSet(viewsets.ModelViewSet):
+#     queryset = Poll.objects.all()
+#     serializer_class = PollSerializer
 
 # API Type 3
 
 
 class ApiChoiceList(generics.ListCreateAPIView):
-    def get_queryset(self):
-        queryset = Choice.objects.filter(poll_id=self.kwargs["pk"])
-        return queryset
-    serializer_class = ChoiceSerializer
-# for test
+    def post(self, request, *args, **kwargs):
+        poll = Poll.objects.get(pk=self.kwargs["pk"])
+        if not request.user == poll.created_by:
+            raise PermissionDenied("You can not create choice for this poll.")
+        return super().post(request, *args, **kwargs)
+
+# #for second test
+# class ApiChoiceList(generics.ListCreateAPIView):
+#     def get_queryset(self):
+#         queryset = Choice.objects.filter(poll_id=self.kwargs["pk"])
+#         return queryset
+#     serializer_class = ChoiceSerializer
+
+# for first test
 # class ApiChoiceList(generics.ListCreateAPIView):
 #     queryset = Choice.objects.all()
 #     serializer_class = ChoiceSerializer
@@ -87,7 +105,6 @@ class LoginView(APIView):
             return Response({"token": user.auth_token.key})
         else:
             return Response({"error": "Wrong Credentials"}, status=status.HTTP_400_BAD_REQUEST)
-        
 
 
 """
